@@ -34,10 +34,7 @@ public class Space {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Парковочное место: ");
-        sb.append(person.toString()).append('\t');
-        sb.append(vehicle.toString()).append('\t');
-        return sb.toString();
+        return "Парковочное место: "+person.toString()+"\t"+vehicle.toString();
     }
 
     public static void Swap(Space A, Space B){
