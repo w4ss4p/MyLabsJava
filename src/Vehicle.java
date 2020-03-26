@@ -41,10 +41,6 @@ public class Vehicle {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Vehicle: ");
-        sb.append(fabricator).append("      \t");
-        sb.append(model).append("      \t");
-        sb.append("Гос. номер - ").append(stateNumber);
-        return sb.toString();
+        return "Vehicle: " + fabricator + "\t" + model "\t Гос. номер - " + stateNumber;
     }
 }
