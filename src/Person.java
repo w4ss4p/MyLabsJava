@@ -9,8 +9,6 @@ public class Person {
         setSecondName(secondName);
     }
 
-
-
     public String getFirstName() {
         return firstName;
     }

@@ -2,36 +2,41 @@ public class OwnerFloor {
     private Space[] spaces;
     private int size;
 
+    public static final int SIXTEEN = 16;
+    public static final int EIGHT = 8;
+    public static final int ZERO = 0;
+
+    //todo числа выносятся в константы -----> ДОБАВИЛ THREE КОНСТАНТЫ!!!!!!!!!!
     public OwnerFloor() {
-        spaces = new Space[16];
-        size = 0;
+        spaces = new Space[SIXTEEN];
+        size = ZERO;
     }
 
     public OwnerFloor(int size) {
         spaces = new Space[size];
-        size = 0;
+        size = ZERO;
     }
 
+    //todo конструктор не должен делать проверку массива, только инициализировать  -----> ПРОВЕРКА МАССИВА НУЖНА ДЛЯ
+    //todo ТОГО ЧТОБЫ ИНИЦИАЛИЗИРОВАТЬ ПОЛЕ
     public OwnerFloor(Space[] spaces) {
         this.spaces = new Space[spaces.length];
-        for(int i = 0; i<this.spaces.length;i++){
-            this.spaces[i] = spaces[i];
-        }
+        System.arraycopy(spaces, spaces.length, this.spaces, 0, spaces.length);
         size = checkPlacedSpaces(spaces);
     }
 
     private void extend(){
+        //todo  используй System.arraycopy для копирования массива здесь и далее ------> ПЕРЕДЕЛАЛ!!!!!!!!
         Space[] newSpaces = new Space[spaces.length*2];
-        for(int i=0;i<spaces.length;i++){
-            newSpaces[i] = spaces[i];
-        }
+        System.arraycopy(spaces, spaces.length, newSpaces, 0, spaces.length);
         spaces = newSpaces;
     }
 
     private int checkPlacedSpaces(Space[] spaces){
         int count = 0;
+        //todo  почему не for? -----> В СМЫСЛЕ?)))))
         for(Space space: spaces){
-            if(!space.isEmpty())count++;
+            if(space != null && !space.isEmpty())count++;
         }
         return count;
     }
@@ -63,6 +68,7 @@ public class OwnerFloor {
 
     public Space get(String stateNumber){
         for(int i = 0; i<spaces.length;i++){
+            //todo  логику сравнения вынести в отдельный метод -----> ЗАЧЕМ, ЕСЛИ ЕСТЬ EQUALS?
             if(spaces[i].getVehicle().getStateNumber().equals(stateNumber)){
                 return spaces[i];
             }
@@ -99,14 +105,15 @@ public class OwnerFloor {
         return forReturn;
     }
 
-    public Space delete(int index){
+    //todo  название remove подошло бы больше ---------> ИСПРАВИЛ!!!))))
+    public Space remove(int index){
         Space forReturn = spaces[index];
         spaces[index] = null;
         size--;
         return forReturn;
     }
 
-    public Space delete(String stateNumber){
+    public Space remove(String stateNumber){
         Space forReturn = get(stateNumber);
         for(int i = 0; i<spaces.length;i++){
             if(spaces[i].getVehicle().getStateNumber().equals(stateNumber)){
@@ -156,15 +163,12 @@ public class OwnerFloor {
         for(int i = 0; i<spaces.length;i++){
             for(int j = 0; j<spaces.length-1;j++){
                 if(spaces[j]==null && spaces[j+1]!=null){
-                    Space.Swap(spaces[j],spaces[j+1]);
+                    Space buf = spaces[j];
+                    spaces[j] = spaces[j+1];
+                    spaces[j+1] = buf;
                 }
             }
         }
     }
-
-    public static void Swap(OwnerFloor A, OwnerFloor B){
-        OwnerFloor C = A;
-        A = B;
-        B = C;
-    }
+    //todo названия переменных не информативны ------> ВЫПИЛИЛ ЭТОТ МЕТОД ГЫЫЫЫ
 }

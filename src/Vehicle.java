@@ -3,10 +3,18 @@ public class Vehicle {
     private String fabricator;
     private String model;
 
+    public static final String DEFAULT_STATE_NUMBER = "";
+    public static final String DEFAULT_FABRICATOR = "";
+    public static final String DEFAULT_MODEL = "";
+    //На всякий случай
+    public static final Vehicle DEFAULT_VEHICLE = new Vehicle();
+
     public Vehicle() {
+        //todo выносим поля по-умолчанию в константы - ИСПРАВИЛ!!!!!!!!!!
+        /*setFabricator("");
         setStateNumber("");
-        setFabricator("");
-        setModel("");
+        setModel("");*/
+        this(DEFAULT_STATE_NUMBER,DEFAULT_FABRICATOR,DEFAULT_MODEL);
     }
 
     public Vehicle(String stateNumber, String fabricator, String model) {
@@ -41,6 +49,6 @@ public class Vehicle {
 
     @Override
     public String toString() {
-        return "Vehicle: " + fabricator + "\t" + model "\t Гос. номер - " + stateNumber;
+        return "Vehicle: " + fabricator + "\t" + model + "\t Гос. номер - " + stateNumber;
     }
 }

@@ -36,10 +36,4 @@ public class Space {
     public String toString() {
         return "Парковочное место: "+person.toString()+"\t"+vehicle.toString();
     }
-
-    public static void Swap(Space A, Space B){
-        Space C = A;
-        A = B;
-        B = C;
-    }
 }

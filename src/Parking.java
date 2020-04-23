@@ -70,7 +70,9 @@ public class Parking {
         for(int i = 0; i<buf.length;i++){
             for(int j = 0; j<buf.length-1;j++){
                 if(buf[j].getSize()>buf[j+1].getSize()){
-                    OwnerFloor.Swap(buf[j],buf[j+1]);
+                    OwnerFloor bufFloor = buf[j];
+                    buf[j] = buf[j+1];
+                    buf[j+1] = bufFloor;
                 }
             }
         }
@@ -101,7 +103,7 @@ public class Parking {
     public Space deleteSpace(String stateNumber){
         Space forReturn = getSpace(stateNumber);
         for(int i = 0; i<ownerFloors.length;i++){
-            ownerFloors[i].delete(stateNumber);
+            ownerFloors[i].remove(stateNumber);
         }
         return forReturn;
     }
@@ -138,7 +140,9 @@ public class Parking {
         for(int i = 0; i<ownerFloors.length;i++){
             for(int j = 0; j<ownerFloors.length-1;j++){
                 if(ownerFloors[j]==null && ownerFloors[j+1]!=null){
-                    OwnerFloor.Swap(ownerFloors[j],ownerFloors[j+1]);
+                    OwnerFloor bufFloor = ownerFloors[j];
+                    ownerFloors[j] = ownerFloors[j+1];
+                    ownerFloors[j+1] = bufFloor;
                 }
             }
         }
