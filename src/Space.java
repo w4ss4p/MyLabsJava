@@ -37,7 +37,7 @@ public class Space {
         return "Парковочное место: "+person.toString()+"\t"+vehicle.toString();
     }
     
-    public boolean equals(int stateNumber) {
+    public boolean stringEquals(int stateNumber) {
         return getVehicle().getStateNumber().equals(StateNumber);
     }
 }
