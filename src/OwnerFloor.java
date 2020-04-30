@@ -69,7 +69,7 @@ public class OwnerFloor {
     public Space get(String stateNumber){
         for(int i = 0; i<spaces.length;i++){
             //todo  логику сравнения вынести в отдельный метод -----> ЗАЧЕМ, ЕСЛИ ЕСТЬ EQUALS?
-            if(spaces[i].getVehicle().getStateNumber().equals(stateNumber)){
+            if(spaces[i].equals){
                 return spaces[i];
             }
         }
@@ -78,7 +78,7 @@ public class OwnerFloor {
 
     public boolean hasSpace(String stateNumber){
         for(int i = 0; i<spaces.length;i++){
-            if(!spaces[i].isEmpty() && spaces[i].getVehicle().getStateNumber().equals(stateNumber)){
+            if(!spaces[i].isEmpty() && spaces[i].equals(stateNumber)){
                 return true;
             }
         }
@@ -96,7 +96,7 @@ public class OwnerFloor {
     public Space set(Space space, String stateNumber){
         Space forReturn = get(stateNumber);
         for(int i = 0; i<spaces.length;i++){
-            if(spaces[i].getVehicle().getStateNumber().equals(stateNumber)){
+            if(spaces[i].equals(stateNumber)){
                 spaces[i] = space;
             }
         }
@@ -116,7 +116,7 @@ public class OwnerFloor {
     public Space remove(String stateNumber){
         Space forReturn = get(stateNumber);
         for(int i = 0; i<spaces.length;i++){
-            if(spaces[i].getVehicle().getStateNumber().equals(stateNumber)){
+            if(spaces[i].equals(stateNumber)){
                 spaces[i] = null;
                 return forReturn;
             }
