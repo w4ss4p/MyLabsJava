@@ -38,6 +38,6 @@ public class Space {
     }
     
     public boolean equals(int stateNumber) {
-        return getVehicle().getStateNumber().equals(StateNumber;
+        return getVehicle().getStateNumber().equals(StateNumber);
     }
 }
