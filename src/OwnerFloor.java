@@ -116,7 +116,7 @@ public class OwnerFloor {
     public Space remove(String stateNumber){
         Space forReturn = get(stateNumber);
         for(int i = 0; i<spaces.length;i++){
-            if(spaces[i].stateEquals(stateNumber)){
+            if(spaces[i].stringEquals(stateNumber)){
                 spaces[i] = null;
                 return forReturn;
             }

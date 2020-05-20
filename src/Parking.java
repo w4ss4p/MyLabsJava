@@ -1,18 +1,18 @@
 public class Parking {
-    private OwnerFloor[] ownerFloors;
+    private Floor[] floors;
     private int size;
 
     public Parking(int size) {
         this.size = size;
-        ownerFloors = new OwnerFloor[size];
+        floors = new Floor[size];
     }
 
-    public Parking(OwnerFloor[] ownerFloors) {
-        this.ownerFloors = new OwnerFloor[ownerFloors.length];
-        size = ownerFloors.length;
+    public Parking(Floor[] floors) {
+        this.floors = new Floor[floors.length];
+        size = floors.length;
     }
 
-    public boolean add(OwnerFloor floor){
+    public boolean add(Floor floor){
         if(checkFreeFloors()){
             lockAdd(floor);
             size++;
@@ -23,9 +23,9 @@ public class Parking {
         }
     }
 
-    public boolean add(OwnerFloor floor, int index){
-        if(ownerFloors[index] == null){
-            ownerFloors[index] = floor;
+    public boolean add(Floor floor, int index){
+        if(floors[index] == null){
+            floors[index] = floor;
             size++;
             return true;
         }else{
@@ -33,44 +33,44 @@ public class Parking {
         }
     }
 
-    public OwnerFloor get(int index){
-        return ownerFloors[index];
+    public Floor get(int index){
+        return floors[index];
     }
 
-    public OwnerFloor set(OwnerFloor floor, int index){
-        OwnerFloor buffer = ownerFloors[index];
-        ownerFloors[index] = floor;
+    public Floor set(Floor floor, int index){
+        Floor buffer = floors[index];
+        floors[index] = floor;
         if(floor == null && buffer!=null) size--;
         if(floor !=null && buffer == null) size++;
         return buffer;
     }
 
-    public OwnerFloor delete(int index){
-        OwnerFloor buf = ownerFloors[index];
-        ownerFloors[index] = null;
+    public Floor delete(int index){
+        Floor buf = floors[index];
+        floors[index] = null;
         size--;
         return buf;
     }
 
-    public int getSize() {
+    public int Size() {
         return size;
     }
 
-    public OwnerFloor[] getOwnerFloors() {
+    public Floor[] toArray() {
         trim();
-        OwnerFloor[] buf = new OwnerFloor[size];
+        Floor[] buf = new Floor[size];
         for(int i = 0; i<size;i++){
-            buf[i] = ownerFloors[i];
+            buf[i] = floors[i];
         }
         return buf;
     }
 
-    public OwnerFloor[] getSortedFloors(){
-        OwnerFloor[] buf = getOwnerFloors();
+    public Floor[] getSortedFloors(){
+        Floor[] buf = toArray();
         for(int i = 0; i<buf.length;i++){
             for(int j = 0; j<buf.length-1;j++){
-                if(buf[j].getSize()>buf[j+1].getSize()){
-                    OwnerFloor bufFloor = buf[j];
+                if(buf[j].size()>buf[j+1].size()){
+                    Floor bufFloor = buf[j];
                     buf[j] = buf[j+1];
                     buf[j+1] = bufFloor;
                 }
@@ -81,18 +81,18 @@ public class Parking {
 
     public Vehicle[] getVehicles(){
         int vehiclesCount = 0;
-        for(OwnerFloor floor: ownerFloors){
-            vehiclesCount+= floor.getVehicles().length;
+        for(Floor floor: floors){
+            vehiclesCount+= floor.toVehicleArray().length;
         }
         Vehicle[] forReturn = new Vehicle[vehiclesCount];
-        for(OwnerFloor floor: ownerFloors){
-            Tools.wiseAdd(floor.getVehicles(),forReturn);
+        for(Floor floor: floors){
+            Tools.wiseAdd(floor.toVehicleArray(),forReturn);
         }
         return forReturn;
     }
 
     public Space getSpace(String stateNumber){
-        for(OwnerFloor floor:ownerFloors){
+        for(Floor floor: floors){
             if(floor.get(stateNumber)!=null){
                 return floor.get(stateNumber);
             }
@@ -102,47 +102,39 @@ public class Parking {
 
     public Space deleteSpace(String stateNumber){
         Space forReturn = getSpace(stateNumber);
-        for(int i = 0; i<ownerFloors.length;i++){
-            ownerFloors[i].remove(stateNumber);
-        }
-        return forReturn;
-    }
-
-    public Space setSpace(String stateNumber, Space space){
-        Space forReturn = getSpace(stateNumber);
-        for(int i = 0; i<ownerFloors.length;i++){
-            ownerFloors[i].set(space,stateNumber);
+        for(int i = 0; i< floors.length; i++){
+            floors[i].remove(stateNumber);
         }
         return forReturn;
     }
 
     private void extend(){
-        OwnerFloor[] newFloors = new OwnerFloor[ownerFloors.length*2];
-        for(int i=0;i<ownerFloors.length;i++){
-            newFloors[i] = ownerFloors[i];
+        Floor[] newFloors = new Floor[floors.length*2];
+        for(int i = 0; i< floors.length; i++){
+            newFloors[i] = floors[i];
         }
-        ownerFloors = newFloors;
+        floors = newFloors;
     }
 
     private boolean checkFreeFloors(){
-        return !(size == ownerFloors.length);
+        return !(size == floors.length);
     }
 
-    private void lockAdd(OwnerFloor floor){
-        for(int i = 0; i<ownerFloors.length;i++){
-            if(ownerFloors[i] == null){
-                ownerFloors[i] = floor;
+    private void lockAdd(Floor floor){
+        for(int i = 0; i< floors.length; i++){
+            if(floors[i] == null){
+                floors[i] = floor;
             }
         }
     }
 
     private void trim(){
-        for(int i = 0; i<ownerFloors.length;i++){
-            for(int j = 0; j<ownerFloors.length-1;j++){
-                if(ownerFloors[j]==null && ownerFloors[j+1]!=null){
-                    OwnerFloor bufFloor = ownerFloors[j];
-                    ownerFloors[j] = ownerFloors[j+1];
-                    ownerFloors[j+1] = bufFloor;
+        for(int i = 0; i< floors.length; i++){
+            for(int j = 0; j< floors.length-1; j++){
+                if(floors[j]==null && floors[j+1]!=null){
+                    Floor bufFloor = floors[j];
+                    floors[j] = floors[j+1];
+                    floors[j+1] = bufFloor;
                 }
             }
         }
