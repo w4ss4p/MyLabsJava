@@ -1,6 +1,6 @@
 import java.util.NoSuchElementException;
 
-public class RentedSpaceFloor implements Floor {
+public class RentedSpaceFloor implements Floor,Cloneable {
     private Node head;
     int size;
 
@@ -187,6 +187,87 @@ public class RentedSpaceFloor implements Floor {
             buf = buf.next;
         }
         return forReturn;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Rented spaces: \n");
+        Node buf = head.next;
+        while (buf.value != null) {
+            sb.append(buf.value.toString()).append('\n');
+            buf = buf.next;
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        RentedSpaceFloor that = (RentedSpaceFloor) obj;
+        boolean answer = that.size() == this.size;
+        if(answer){
+            for(int i = 0; i<size;i++){
+                answer &= (that.toArray()[i].equals(this.toArray()[i]));
+            }
+        }
+        return answer;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 53 *size;
+        Node buf = head.next;
+        while (buf.value != null) {
+            hash*=buf.value.hashCode();
+            buf = buf.next;
+        }
+        return hash;
+    }
+
+    public Object clone() throws CloneNotSupportedException{
+        return new RentedSpaceFloor(toArray().clone());
+    }
+
+    @Override
+    public boolean remove(Space space) {
+        Node buf = head.next;
+        while (buf.value != null) {
+            if (buf.value.equals(space)){
+                Space tmp = buf.value;
+                Node prev = buf.prev;
+                Node next = buf.next;
+                prev.next = next;
+                next.prev = prev;
+                size--;
+                return true;
+            }
+            buf = buf.next;
+        }
+        return false;
+    }
+
+    @Override
+    public int indexOf(Space space) {
+        Node buf = head.next;
+        int index = 0;
+        while (buf.value != null) {
+            if (buf.value.equals(space)) return index;
+            index++;
+            buf = buf.next;
+        }
+        return -1;
+    }
+
+    @Override
+    public int countOfPersonsSpaces(Person person) {
+        Node buf = head.next;
+        int count = 0;
+        while (buf.value != null) {
+            if (buf.value.getPerson().equals(person)) count++;
+            buf = buf.next;
+        }
+        return count;
     }
 }
 

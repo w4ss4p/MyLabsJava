@@ -155,4 +155,33 @@ public class Parking {
         }
         return count;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Floors(<");
+        sb.append(size).append("> total):\n");
+        for(int i = 0;i<size;i++){
+            if(floors[i]!=null){
+                sb.append(floors[i].toString());
+            }else{
+                sb.append("Пустой этаж");
+            }
+        }
+        return sb.toString();
+    }
+
+    public Floor[] getFloorsWithPersonOnBoard(Person person){
+        int count = 0;
+        for(int i = 0; i<size;i++){
+            if(floors[i].countOfPersonsSpaces(person)>0) count++;
+        }
+        Floor[] forReturn = new Floor[count];
+        int index = 0;
+        for(int i = 0; i<size;i++){
+            if(floors[i].countOfPersonsSpaces(person)>0){
+                forReturn[index++] = floors[i];
+            }
+        }
+        return forReturn;
+    }
 }

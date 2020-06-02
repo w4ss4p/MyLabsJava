@@ -1,6 +1,4 @@
-public class RentedSpace extends AbstractSpace implements Space {
-    private Person person;
-    private Vehicle vehicle;
+public class RentedSpace extends AbstractSpace implements Space, Cloneable {
 
     public RentedSpace() {
         super();
@@ -12,5 +10,20 @@ public class RentedSpace extends AbstractSpace implements Space {
 
     public RentedSpace(Person person, Vehicle vehicle) {
         super(person,vehicle);
+    }
+
+    @Override
+    public int hashCode() {
+        return 53*super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Tenant: " + super.toString();
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
     }
 }

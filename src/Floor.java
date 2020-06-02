@@ -1,15 +1,21 @@
 public interface Floor {
-    public boolean add(Space space);
-    public boolean add(Space space, int index);
-    public Space get(int index);
-    public Space get(String stateNumber);
-    public boolean contains(String stateNumber);
-    public Space set(Space space, int index);
-    public Space remove (int index);
-    public Space remove (String stateNumber);
-    public int size();
-    public Space[] toArray();
-    public Vehicle[] toVehicleArray();
-    public Space[] getTypedSpaces(VehicleTypes type);
-    public Space[] getFreeSpaces();
+    boolean add(Space space);
+    boolean add(Space space, int index);
+    Space get(int index);
+    Space get(String stateNumber);
+    boolean contains(String stateNumber);
+    Space set(Space space, int index);
+    Space remove (int index);
+    Space remove (String stateNumber);
+    boolean remove(Space space);
+    int indexOf(Space space);
+    public int countOfPersonsSpaces(Person person);
+    int size();
+    Space[] toArray();
+    Vehicle[] toVehicleArray();
+    Space[] getTypedSpaces(VehicleTypes type);
+    Space[] getFreeSpaces();
+    String toString();
+    int hashCode();
+    boolean equals(Object obj);
 }

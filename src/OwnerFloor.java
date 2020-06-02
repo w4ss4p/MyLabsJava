@@ -1,4 +1,4 @@
-public class OwnerFloor implements Floor{
+public class OwnerFloor implements Floor,Cloneable{
     private Space[] spaces;
     private int size;
 
@@ -191,5 +191,74 @@ public class OwnerFloor implements Floor{
             if(spaces[i].isEmpty()) forReturn[count++] = spaces[i];
         }
         return forReturn;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Rented spaces: \n");
+        for(int i = 0; i<size;i++){
+            if(spaces[i]!=null) sb.append(spaces[i].toString()).append('\n');
+            else{
+                sb.append("--------------------");
+            }
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        OwnerFloor that = (OwnerFloor) obj;
+        boolean answer = that.size == this.size;
+        if(answer){
+            for(int i = 0; i<size;i++){
+                answer &= (that.toArray()[i].equals(this.toArray()[i]));
+            }
+        }
+        return answer;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 71 * size;
+        for(int i = 0; i<size;i++){
+            if(spaces[i]!=null)
+                hash*=spaces[i].hashCode();
+        }
+        return hash;
+    }
+
+    public Object clone() throws CloneNotSupportedException{
+        return new OwnerFloor(this.spaces.clone());
+    }
+
+    @Override
+    public boolean remove(Space space) {
+        for(int i = 0; i<size;i++){
+            if(spaces[i].equals(space)){
+                spaces[i] = null;
+                trim();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int indexOf(Space space) {
+        for(int i = 0; i<size;i++){
+            if(spaces[i].equals(space)) return i;
+        }
+        return -1;
+    }
+
+    @Override
+    public int countOfPersonsSpaces(Person person) {
+        int count = 0;
+        for(int i = 0;i<size;i++){
+            if(spaces[i].getPerson().equals(person)) count++;
+        }
+        return count;
     }
 }

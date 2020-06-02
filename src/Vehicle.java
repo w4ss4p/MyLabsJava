@@ -1,4 +1,4 @@
-public final class Vehicle {
+public final class Vehicle implements Cloneable{
     private String stateNumber;
     private String fabricator;
     private String model;
@@ -7,7 +7,6 @@ public final class Vehicle {
     public static final String DEFAULT_STATE_NUMBER = "";
     public static final String DEFAULT_FABRICATOR = "";
     public static final String DEFAULT_MODEL = "";
-    //На всякий случай
     public static final Vehicle NO_VEHICLE = new Vehicle(VehicleTypes.NONE);
 
     public Vehicle(VehicleTypes type) {
@@ -56,6 +55,36 @@ public final class Vehicle {
 
     @Override
     public String toString() {
-        return "Vehicle: " + fabricator + "\t" + model + "\t Гос. номер - " + stateNumber;
+        if(getType() == VehicleTypes.NONE) return "NONE";
+        final StringBuilder sb = new StringBuilder("<");
+        sb.append(fabricator).append("> <");
+        sb.append(model).append("> ");
+        sb.append("(<").append(type).append(">) ");
+        sb.append("Гос. номер - <").append(stateNumber).append('>');
+        return sb.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return stateNumber.hashCode() ^
+                fabricator.hashCode() ^
+                model.hashCode() ^
+                type.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Vehicle vehicle = (Vehicle) object;
+        return stateNumber.equals(vehicle.stateNumber) &&
+                fabricator.equals(vehicle.fabricator) &&
+                model.equals(vehicle.model) &&
+                type == vehicle.type;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
     }
 }
