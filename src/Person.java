@@ -1,8 +1,8 @@
-public class Person {
+public final class Person {
     private String firstName;
     private String secondName;
 
-    public static final Person NON_NAMED_PERSON = new Person("","");
+    public static final Person NOT_NAMED_PERSON = new Person("","");
 
     public Person(String firstName, String secondName) {
         setFirstName(firstName);

@@ -1,4 +1,4 @@
-public class OwnerFloor {
+public class OwnerFloor implements Floor{
     private Space[] spaces;
     private int size;
 
@@ -6,7 +6,6 @@ public class OwnerFloor {
     public static final int EIGHT = 8;
     public static final int ZERO = 0;
 
-    //todo числа выносятся в константы -----> ДОБАВИЛ THREE КОНСТАНТЫ!!!!!!!!!!
     public OwnerFloor() {
         spaces = new Space[SIXTEEN];
         size = ZERO;
@@ -17,8 +16,6 @@ public class OwnerFloor {
         size = ZERO;
     }
 
-    //todo конструктор не должен делать проверку массива, только инициализировать  -----> ПРОВЕРКА МАССИВА НУЖНА ДЛЯ
-    //todo ТОГО ЧТОБЫ ИНИЦИАЛИЗИРОВАТЬ ПОЛЕ
     public OwnerFloor(Space[] spaces) {
         this.spaces = new Space[spaces.length];
         System.arraycopy(spaces, spaces.length, this.spaces, 0, spaces.length);
@@ -26,7 +23,6 @@ public class OwnerFloor {
     }
 
     private void extend(){
-        //todo  используй System.arraycopy для копирования массива здесь и далее ------> ПЕРЕДЕЛАЛ!!!!!!!!
         Space[] newSpaces = new Space[spaces.length*2];
         System.arraycopy(spaces, spaces.length, newSpaces, 0, spaces.length);
         spaces = newSpaces;
@@ -34,7 +30,6 @@ public class OwnerFloor {
 
     private int checkPlacedSpaces(Space[] spaces){
         int count = 0;
-        //todo  почему не for? -----> В СМЫСЛЕ?)))))
         for(Space space: spaces){
             if(space != null && !space.isEmpty())count++;
         }
@@ -68,7 +63,6 @@ public class OwnerFloor {
 
     public Space get(String stateNumber){
         for(int i = 0; i<spaces.length;i++){
-            //todo  логику сравнения вынести в отдельный метод -----> ЗАЧЕМ, ЕСЛИ ЕСТЬ EQUALS?
             if(spaces[i].stringEquals(stateNumber)){
                 return spaces[i];
             }
@@ -76,7 +70,7 @@ public class OwnerFloor {
         return null;
     }
 
-    public boolean hasSpace(String stateNumber){
+    public boolean contains(String stateNumber){
         for(int i = 0; i<spaces.length;i++){
             if(!spaces[i].isEmpty() && spaces[i].stringEquals(stateNumber)){
                 return true;
@@ -105,7 +99,6 @@ public class OwnerFloor {
         return forReturn;
     }
 
-    //todo  название remove подошло бы больше ---------> ИСПРАВИЛ!!!))))
     public Space remove(int index){
         Space forReturn = spaces[index];
         spaces[index] = null;
@@ -124,11 +117,7 @@ public class OwnerFloor {
         return null;
     }
 
-    public int getSize() {
-        return size;
-    }
-
-    public Space[] getSpaces(){
+    public Space[] toArray(){
         Space[] forReturn = new Space[size];
         trim();
         for(int i = 0; i<forReturn.length;i++){
@@ -137,8 +126,8 @@ public class OwnerFloor {
         return forReturn;
     }
 
-    public Vehicle[] getVehicles(){
-        Space[] spaces = getSpaces();
+    public Vehicle[] toVehicleArray(){
+        Space[] spaces = toArray();
         Vehicle[] forReturn = new Vehicle[size];
         for(int i = 0; i<forReturn.length;i++){
             forReturn[i] = spaces[i].getVehicle();
@@ -170,5 +159,37 @@ public class OwnerFloor {
             }
         }
     }
-    //todo названия переменных не информативны ------> ВЫПИЛИЛ ЭТОТ МЕТОД ГЫЫЫЫ
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public Space[] getTypedSpaces(VehicleTypes type) {
+        int count = 0;
+        for(int i = 0; i<size;i++){
+            if(spaces[i].getVehicle().getType() == type) count++;
+        }
+        Space[] forReturn = new Space[count];
+        count = 0;
+        for(int i = 0; i<size;i++){
+            if(spaces[i].getVehicle().getType() == type) forReturn[count++] = spaces[i];
+        }
+        return forReturn;
+    }
+
+    @Override
+    public Space[] getFreeSpaces() {
+        int count = 0;
+        for(int i = 0; i<size;i++){
+            if(spaces[i].isEmpty()) count++;
+        }
+        Space[] forReturn = new Space[count];
+        count = 0;
+        for(int i = 0; i<size;i++){
+            if(spaces[i].isEmpty()) forReturn[count++] = spaces[i];
+        }
+        return forReturn;
+    }
 }

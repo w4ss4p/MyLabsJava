@@ -10,4 +10,6 @@ public interface Floor {
     public int size();
     public Space[] toArray();
     public Vehicle[] toVehicleArray();
+    public Space[] getTypedSpaces(VehicleTypes type);
+    public Space[] getFreeSpaces();
 }

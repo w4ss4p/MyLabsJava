@@ -152,6 +152,42 @@ public class RentedSpaceFloor implements Floor {
         }
         return buf;
     }
+
+    @Override
+    public Space[] getTypedSpaces(VehicleTypes type) {
+        int count = 0;
+        Node buf = head.next;
+        while (buf.value != null) {
+            if (buf.value.getVehicle().getType() == type) count++;
+            buf = buf.next;
+        }
+        Space[] forReturn = new Space[count];
+        count = 0;
+        buf = head.next;
+        while (buf.value != null) {
+            if (buf.value.getVehicle().getType() == type) forReturn[count++] = buf.value;
+            buf = buf.next;
+        }
+        return forReturn;
+    }
+
+    @Override
+    public Space[] getFreeSpaces() {
+        int count = 0;
+        Node buf = head.next;
+        while (buf.value != null) {
+            if (buf.value.isEmpty()) count++;
+            buf = buf.next;
+        }
+        Space[] forReturn = new Space[count];
+        count = 0;
+        buf = head.next;
+        while (buf.value != null) {
+            if (buf.value.isEmpty()) forReturn[count++] = buf.value;
+            buf = buf.next;
+        }
+        return forReturn;
+    }
 }
 
 class Node {

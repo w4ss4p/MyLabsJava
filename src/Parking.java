@@ -140,4 +140,19 @@ public class Parking {
         }
     }
 
+    public int getFreeSpaceCount(){
+        int count = 0;
+        for(int i = 0; i<size;i++){
+            count+=floors[i].getFreeSpaces().length;
+        }
+        return count;
+    }
+
+    public int getTypedVehicleCount(VehicleTypes type){
+        int count = 0;
+        for(int i = 0; i<size;i++){
+            count+=floors[i].getTypedSpaces(type).length;
+        }
+        return count;
+    }
 }
