@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Parking {
     private Floor[] floors;
     private int size;
@@ -24,6 +26,7 @@ public class Parking {
     }
 
     public boolean add(Floor floor, int index){
+        Objects.requireNonNull(floor);
         if(floors[index] == null){
             floors[index] = floor;
             size++;
@@ -38,6 +41,7 @@ public class Parking {
     }
 
     public Floor set(Floor floor, int index){
+        Objects.requireNonNull(floor);
         Floor buffer = floors[index];
         floors[index] = floor;
         if(floor == null && buffer!=null) size--;
@@ -52,7 +56,7 @@ public class Parking {
         return buf;
     }
 
-    public int Size() {
+    public int size() {
         return size;
     }
 
@@ -92,6 +96,8 @@ public class Parking {
     }
 
     public Space getSpace(String stateNumber){
+        Utils.checkRegNumberFormat(stateNumber);
+        Objects.requireNonNull(stateNumber);
         for(Floor floor: floors){
             if(floor.get(stateNumber)!=null){
                 return floor.get(stateNumber);
@@ -101,6 +107,8 @@ public class Parking {
     }
 
     public Space deleteSpace(String stateNumber){
+        Utils.checkRegNumberFormat(stateNumber);
+        Objects.requireNonNull(stateNumber);
         Space forReturn = getSpace(stateNumber);
         for(int i = 0; i< floors.length; i++){
             floors[i].remove(stateNumber);
@@ -121,6 +129,7 @@ public class Parking {
     }
 
     private void lockAdd(Floor floor){
+        Objects.requireNonNull(floor);
         for(int i = 0; i< floors.length; i++){
             if(floors[i] == null){
                 floors[i] = floor;
@@ -171,6 +180,7 @@ public class Parking {
     }
 
     public Floor[] getFloorsWithPersonOnBoard(Person person){
+        Objects.requireNonNull(person);
         int count = 0;
         for(int i = 0; i<size;i++){
             if(floors[i].countOfPersonsSpaces(person)>0) count++;

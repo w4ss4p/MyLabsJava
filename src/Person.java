@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public final class Person implements Cloneable {
     private String firstName;
     private String secondName;
@@ -14,7 +16,7 @@ public final class Person implements Cloneable {
     }
 
     private void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstName = Objects.requireNonNull(firstName);
     }
 
     public String getSecondName() {
@@ -22,7 +24,7 @@ public final class Person implements Cloneable {
     }
 
     private void setSecondName(String secondName){
-            this.secondName = secondName;
+            this.secondName = Objects.requireNonNull(secondName);
     }
 
     @Override

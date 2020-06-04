@@ -1,3 +1,8 @@
+import jdk.jshell.execution.Util;
+
+import java.time.LocalDate;
+import java.util.Objects;
+
 public class OwnerFloor implements Floor,Cloneable{
     private Space[] spaces;
     private int size;
@@ -48,6 +53,7 @@ public class OwnerFloor implements Floor,Cloneable{
     }
 
     public boolean add(Space space, int number){
+        Objects.requireNonNull(space);
         if(spaces[number].isEmpty()){
             spaces[number] = space;
             size++;
@@ -58,10 +64,12 @@ public class OwnerFloor implements Floor,Cloneable{
     }
 
     public Space get(int number){
+
         return spaces[number];
     }
 
     public Space get(String stateNumber){
+        Utils.checkRegNumberFormat(stateNumber);
         for(int i = 0; i<spaces.length;i++){
             if(spaces[i].stringEquals(stateNumber)){
                 return spaces[i];
@@ -107,6 +115,7 @@ public class OwnerFloor implements Floor,Cloneable{
     }
 
     public Space remove(String stateNumber){
+        Utils.checkRegNumberFormat(stateNumber);
         Space forReturn = get(stateNumber);
         for(int i = 0; i<spaces.length;i++){
             if(spaces[i].stringEquals(stateNumber)){
@@ -136,6 +145,7 @@ public class OwnerFloor implements Floor,Cloneable{
     }
 
     private void lockAdd(Space space){
+        Objects.requireNonNull(space);
         for(int i = 0; i<spaces.length;i++){
             if(spaces[i].isEmpty()){
                 spaces[i] = space;
@@ -235,6 +245,7 @@ public class OwnerFloor implements Floor,Cloneable{
 
     @Override
     public boolean remove(Space space) {
+        Objects.requireNonNull(space);
         for(int i = 0; i<size;i++){
             if(spaces[i].equals(space)){
                 spaces[i] = null;
@@ -260,5 +271,41 @@ public class OwnerFloor implements Floor,Cloneable{
             if(spaces[i].getPerson().equals(person)) count++;
         }
         return count;
+    }
+
+    @Override
+    public LocalDate nearestRentEndsDate() throws NoRentedSpaceException{
+        checkRentedSpaces();
+        LocalDate date = LocalDate.of(5000,0,0);
+        for(int i = 0;i<spaces.length;i++){
+            if(spaces[i] instanceof RentedSpace){
+                RentedSpace rs = (RentedSpace) spaces[i];
+                if(rs.getRentEndsDate().isBefore(date) &&
+                        rs.getRentEndsDate().isAfter(LocalDate.now().minusDays(1))){}
+                date = rs.getRentEndsDate();
+            }
+        }
+        return date;
+    }
+
+    @Override
+    public Space spaceWithNearestRentEndsDate() throws NoRentedSpaceException{
+        LocalDate date = nearestRentEndsDate();
+        for(int i = 0;i<spaces.length;i++){
+            if(spaces[i] instanceof RentedSpace){
+                RentedSpace rs = (RentedSpace) spaces[i];
+                if(rs.getRentEndsDate().equals(date)) return rs;
+            }
+        }
+        return null;
+    }
+
+
+    private void checkRentedSpaces() throws NoRentedSpaceException{
+        int rentedSpaceCount = 0;
+        for(int i = 0; i<spaces.length;i++){
+            if(spaces[i] instanceof RentedSpace) rentedSpaceCount++;
+        }
+        if(rentedSpaceCount==0) throw new NoRentedSpaceException();
     }
 }

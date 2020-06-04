@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public final class Vehicle implements Cloneable{
     private String stateNumber;
     private String fabricator;
@@ -26,7 +28,8 @@ public final class Vehicle implements Cloneable{
     }
 
     private void setStateNumber(String stateNumber) {
-        this.stateNumber = stateNumber;
+        Utils.checkRegNumberFormat(stateNumber);
+        this.stateNumber = Objects.requireNonNull(stateNumber);
     }
 
     public String getFabricator() {
@@ -34,7 +37,7 @@ public final class Vehicle implements Cloneable{
     }
 
     private void setFabricator(String fabricator) {
-        this.fabricator = fabricator;
+        this.fabricator = Objects.requireNonNull(fabricator);
     }
 
     public String getModel() {
@@ -42,7 +45,7 @@ public final class Vehicle implements Cloneable{
     }
 
     private void setModel(String model) {
-        this.model = model;
+        this.model = Objects.requireNonNull(model);
     }
 
     public VehicleTypes getType() {
@@ -50,7 +53,7 @@ public final class Vehicle implements Cloneable{
     }
 
     private void setType(VehicleTypes type) {
-        this.type = type;
+        this.type = Objects.requireNonNull(type);
     }
 
     @Override

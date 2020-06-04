@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public interface Floor {
     boolean add(Space space);
     boolean add(Space space, int index);
@@ -18,4 +20,6 @@ public interface Floor {
     String toString();
     int hashCode();
     boolean equals(Object obj);
+    public LocalDate nearestRentEndsDate() throws NoRentedSpaceException;
+    public Space spaceWithNearestRentEndsDate() throws NoRentedSpaceException;
 }
