@@ -1,6 +1,7 @@
 import jdk.jshell.execution.Util;
 
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.Objects;
 
 public class OwnerFloor implements Floor,Cloneable{
@@ -68,25 +69,6 @@ public class OwnerFloor implements Floor,Cloneable{
         return spaces[number];
     }
 
-    public Space get(String stateNumber){
-        Utils.checkRegNumberFormat(stateNumber);
-        for(int i = 0; i<spaces.length;i++){
-            if(spaces[i].stringEquals(stateNumber)){
-                return spaces[i];
-            }
-        }
-        return null;
-    }
-
-    public boolean contains(String stateNumber){
-        for(int i = 0; i<spaces.length;i++){
-            if(!spaces[i].isEmpty() && spaces[i].stringEquals(stateNumber)){
-                return true;
-            }
-        }
-        return false;
-    }
-
     public Space set(Space space, int index){
         Space forReturn = spaces[index];
         spaces[index] = space;
@@ -114,6 +96,8 @@ public class OwnerFloor implements Floor,Cloneable{
         return forReturn;
     }
 
+    //Вот тут косяк в диаграмме стефа, если ебануть его дефолтным
+    // то через foreach измениния не пройдут в поле класс
     public Space remove(String stateNumber){
         Utils.checkRegNumberFormat(stateNumber);
         Space forReturn = get(stateNumber);
@@ -126,6 +110,8 @@ public class OwnerFloor implements Floor,Cloneable{
         return null;
     }
 
+    //В собрате RSFoor работать быстрее будет без итератора
+    //Сори что коменты здесь но мне впадлу переключаться в собрата и писать их там
     public Space[] toArray(){
         Space[] forReturn = new Space[size];
         trim();
@@ -135,11 +121,29 @@ public class OwnerFloor implements Floor,Cloneable{
         return forReturn;
     }
 
+    //Тут тоже одна хуйня, если в собрате удобней ебануть итератор
+    //то тут работать будет быстрее без него
     public Vehicle[] toVehicleArray(){
         Space[] spaces = toArray();
         Vehicle[] forReturn = new Vehicle[size];
         for(int i = 0; i<forReturn.length;i++){
             forReturn[i] = spaces[i].getVehicle();
+        }
+        return forReturn;
+    }
+
+    //Тут для массива ждля выхода надо знать размер, он считается через isEmpty
+    //Нечего тут менять и два итератора создавать
+    @Override
+    public Space[] getFreeSpaces() {
+        int count = 0;
+        for(int i = 0; i<size;i++){
+            if(spaces[i].isEmpty()) count++;
+        }
+        Space[] forReturn = new Space[count];
+        count = 0;
+        for(int i = 0; i<size;i++){
+            if(spaces[i].isEmpty()) forReturn[count++] = spaces[i];
         }
         return forReturn;
     }
@@ -185,20 +189,6 @@ public class OwnerFloor implements Floor,Cloneable{
         count = 0;
         for(int i = 0; i<size;i++){
             if(spaces[i].getVehicle().getType() == type) forReturn[count++] = spaces[i];
-        }
-        return forReturn;
-    }
-
-    @Override
-    public Space[] getFreeSpaces() {
-        int count = 0;
-        for(int i = 0; i<size;i++){
-            if(spaces[i].isEmpty()) count++;
-        }
-        Space[] forReturn = new Space[count];
-        count = 0;
-        for(int i = 0; i<size;i++){
-            if(spaces[i].isEmpty()) forReturn[count++] = spaces[i];
         }
         return forReturn;
     }
@@ -256,6 +246,10 @@ public class OwnerFloor implements Floor,Cloneable{
         return false;
     }
 
+    //Ну тут можно переписать через foreach везде одинаково работать будет
+    //но придётся делать доп переменную для индекса
+    //а тут она в цикле
+    //Так что нихт
     @Override
     public int indexOf(Space space) {
         for(int i = 0; i<size;i++){
@@ -264,48 +258,56 @@ public class OwnerFloor implements Floor,Cloneable{
         return -1;
     }
 
-    @Override
-    public int countOfPersonsSpaces(Person person) {
-        int count = 0;
-        for(int i = 0;i<size;i++){
-            if(spaces[i].getPerson().equals(person)) count++;
-        }
-        return count;
-    }
-
-    @Override
-    public LocalDate nearestRentEndsDate() throws NoRentedSpaceException{
-        checkRentedSpaces();
-        LocalDate date = LocalDate.of(5000,0,0);
-        for(int i = 0;i<spaces.length;i++){
-            if(spaces[i] instanceof RentedSpace){
-                RentedSpace rs = (RentedSpace) spaces[i];
-                if(rs.getRentEndsDate().isBefore(date) &&
-                        rs.getRentEndsDate().isAfter(LocalDate.now().minusDays(1))){}
-                date = rs.getRentEndsDate();
-            }
-        }
-        return date;
-    }
 
     @Override
     public Space spaceWithNearestRentEndsDate() throws NoRentedSpaceException{
         LocalDate date = nearestRentEndsDate();
-        for(int i = 0;i<spaces.length;i++){
-            if(spaces[i] instanceof RentedSpace){
-                RentedSpace rs = (RentedSpace) spaces[i];
+        for(Space space:this){
+            if(space instanceof RentedSpace){
+                RentedSpace rs = (RentedSpace) space;
                 if(rs.getRentEndsDate().equals(date)) return rs;
             }
         }
         return null;
     }
 
-
-    private void checkRentedSpaces() throws NoRentedSpaceException{
+    public void checkRentedSpaces() throws NoRentedSpaceException{
         int rentedSpaceCount = 0;
         for(int i = 0; i<spaces.length;i++){
             if(spaces[i] instanceof RentedSpace) rentedSpaceCount++;
         }
         if(rentedSpaceCount==0) throw new NoRentedSpaceException();
+    }
+
+    @Override
+    public int compareTo(Floor o) {
+        OwnerFloor of = (OwnerFloor) o;
+        return this.size-of.size();
+    }
+
+    @Override
+    public Iterator<Space> iterator() {
+        trim();
+        return new SpaceIterator(spaces);
+    }
+
+    private class SpaceIterator implements Iterator<Space> {
+        private Space[] spaces;
+        private int targetIndex = 0;
+
+        public SpaceIterator(Space[] spaces){
+            this.spaces = new Space[size];
+            System.arraycopy(spaces,0,this.spaces,0,size);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return targetIndex<size || spaces[targetIndex]!=null;
+        }
+
+        @Override
+        public Space next() {
+            return spaces[targetIndex++];
+        }
     }
 }

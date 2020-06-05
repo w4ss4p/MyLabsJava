@@ -1,15 +1,17 @@
+import java.time.LocalDate;
+
 public class OwnedSpace extends AbstractSpace implements Space{
 
     public OwnedSpace(){
         super();
     }
 
-    public OwnedSpace(Person person){
-        super(person);
+    public OwnedSpace(Person person, LocalDate sinceDate){
+        super(person,sinceDate);
     }
 
-    public OwnedSpace(Person person, Vehicle vehicle){
-        super(person,vehicle);
+    public OwnedSpace(Person person, Vehicle vehicle,LocalDate sinceDate){
+        super(person,vehicle,sinceDate);
     }
 
     @Override
@@ -26,6 +28,4 @@ public class OwnedSpace extends AbstractSpace implements Space{
     public Object clone() throws CloneNotSupportedException{
         return super.clone();
     }
-
-
 }

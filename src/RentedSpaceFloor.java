@@ -1,10 +1,11 @@
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class RentedSpaceFloor implements Floor,Cloneable {
     private Node head;
-    int size;
+    private int size;
 
     public RentedSpaceFloor() {
         head = new Node(null, null);
@@ -52,28 +53,6 @@ public class RentedSpaceFloor implements Floor,Cloneable {
     public Space get(int index) {
         if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
         return getTargetNode(index).value;
-    }
-
-    @Override
-    public Space get(String stateNumber) {
-        Utils.checkRegNumberFormat(stateNumber);
-        Node buf = head.next;
-        while (buf.value != null) {
-            if (buf.value.stringEquals(stateNumber)) return buf.value;
-            buf = buf.next;
-        }
-        throw new NoSuchElementException();
-    }
-
-    @Override
-    public boolean contains(String stateNumber) {
-        Utils.checkRegNumberFormat(stateNumber);
-        Node buf = head.next;
-        while (buf.value != null) {
-            if (buf.value.stringEquals(stateNumber)) return true;
-            buf = buf.next;
-        }
-        return false;
     }
 
     @Override
@@ -265,34 +244,6 @@ public class RentedSpaceFloor implements Floor,Cloneable {
     }
 
     @Override
-    public int countOfPersonsSpaces(Person person) {
-        Objects.requireNonNull(person);
-        Node buf = head.next;
-        int count = 0;
-        while (buf.value != null) {
-            if (buf.value.getPerson().equals(person)) count++;
-            buf = buf.next;
-        }
-        return count;
-    }
-
-    @Override
-    public LocalDate nearestRentEndsDate() throws NoRentedSpaceException{
-        checkRentedSpaces();
-        LocalDate date = LocalDate.of(5000,0,0);
-        Node buf = head.next;
-        while(buf.value != null){
-            if(buf.value instanceof RentedSpace){
-                RentedSpace rs = (RentedSpace) buf.value;
-                if(rs.getRentEndsDate().isBefore(date) &&
-                        rs.getRentEndsDate().isAfter(LocalDate.now().minusDays(1))){}
-                date = rs.getRentEndsDate();
-            }
-        }
-        return date;
-    }
-
-    @Override
     public Space spaceWithNearestRentEndsDate() throws NoRentedSpaceException{
         LocalDate date = nearestRentEndsDate();
         Node buf = head.next;
@@ -305,13 +256,44 @@ public class RentedSpaceFloor implements Floor,Cloneable {
         return null;
     }
 
-    private void checkRentedSpaces() throws NoRentedSpaceException{
+    public void checkRentedSpaces() throws NoRentedSpaceException{
         int rentedSpaceCount = 0;
         Node buf = head.next;
         while(buf.value!=null){
             if(buf.value instanceof RentedSpace) rentedSpaceCount++;
         }
         if(rentedSpaceCount==0) throw new NoRentedSpaceException();
+    }
+
+    @Override
+    public int compareTo(Floor o) {
+        RentedSpaceFloor rsf = (RentedSpaceFloor) o;
+        return this.size-rsf.size();
+    }
+
+    @Override
+    public Iterator<Space> iterator() {
+        return new SpaceIterator(head);
+    }
+
+    private class SpaceIterator implements Iterator<Space>{
+        private Node head;
+
+        public SpaceIterator(Node head){
+            this.head = head.next;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return head.value!=null;
+        }
+
+        @Override
+        public Space next() {
+            Space space = head.value;
+            head = head.next;
+            return space;
+        }
     }
 }
 

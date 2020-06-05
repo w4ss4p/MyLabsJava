@@ -1,6 +1,8 @@
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Objects;
 
-public class Parking {
+public class Parking implements Iterable<Floor> {
     private Floor[] floors;
     private int size;
 
@@ -71,15 +73,7 @@ public class Parking {
 
     public Floor[] getSortedFloors(){
         Floor[] buf = toArray();
-        for(int i = 0; i<buf.length;i++){
-            for(int j = 0; j<buf.length-1;j++){
-                if(buf[j].size()>buf[j+1].size()){
-                    Floor bufFloor = buf[j];
-                    buf[j] = buf[j+1];
-                    buf[j+1] = bufFloor;
-                }
-            }
-        }
+        Arrays.sort(buf);
         return buf;
     }
 
@@ -193,5 +187,30 @@ public class Parking {
             }
         }
         return forReturn;
+    }
+
+    @Override
+    public Iterator<Floor> iterator() {
+        trim();
+        return new FloorIterator(floors);
+    }
+
+    private class FloorIterator implements Iterator<Floor> {
+        private Floor[] floors = new Floor[size];
+        private int targetIndex = 0;
+
+        public FloorIterator(Floor[] floors){
+            System.arraycopy(floors,0,this.floors,0,size);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return targetIndex<size || floors[targetIndex]!=null;
+        }
+
+        @Override
+        public Floor next() {
+            return floors[targetIndex++];
+        }
     }
 }
