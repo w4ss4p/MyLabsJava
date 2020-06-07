@@ -1,6 +1,8 @@
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Iterator;
 
-public interface Floor extends Comparable<Floor>,Iterable<Space> {
+public interface Floor extends Comparable<Floor>,Iterable<Space>, Collection<Space> {
     boolean add(Space space);
     boolean add(Space space, int index);
     Space get(int index);
@@ -18,6 +20,67 @@ public interface Floor extends Comparable<Floor>,Iterable<Space> {
     int hashCode();
     boolean equals(Object obj);
     void checkRentedSpaces() throws NoRentedSpaceException;
+
+    @Override
+    default boolean contains(Object o) {
+        for(Space space:this){
+            if(space.equals(o)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    default boolean isEmpty() {
+        return size()==0 ;
+    }
+
+    @Override
+    default boolean containsAll(Collection<?> c) {
+       boolean flag = true;
+       Iterator iterator = c.iterator();
+       while(iterator.hasNext()){
+           flag &= contains(iterator.next());
+       }
+       return flag;
+    }
+
+    @Override
+    default boolean addAll(Collection<? extends Space> c) {
+        boolean flag = false;
+        Iterator iterator = c.iterator();
+        while(iterator.hasNext()){
+            flag |= add((Space) iterator.next());
+        }
+        return flag;
+    }
+
+    @Override
+    default boolean remove(Object o) {
+        return remove((Space) o);
+    }
+
+    @Override
+    default boolean removeAll(Collection<?> c) {
+        boolean flag = false;
+        Iterator iterator = c.iterator();
+        while(iterator.hasNext()){
+            flag |= remove(iterator.next());
+        }
+        return flag;
+    }
+
+    @Override
+    default boolean retainAll(Collection<?> c) {
+        boolean flag = false;
+        Iterator iterator = iterator();
+        while (iterator.hasNext()){
+            Object object = iterator.next();
+            if(!c.contains(object)) flag|=remove(object);
+        }
+        return flag;
+    }
+
+
 
     default Space spaceWithNearestRentEndsDate() throws NoRentedSpaceException{
         LocalDate date = nearestRentEndsDate();

@@ -19,6 +19,12 @@ public class RentedSpaceFloor implements Floor,Cloneable {
     }
 
     @Override
+    public void clear() {
+        head = new Node(null, null);
+        size = 0;
+    }
+
+    @Override
     public boolean add(Space space) {
         if (size == 0) {
             head.next = new Node(head, space);
@@ -115,6 +121,17 @@ public class RentedSpaceFloor implements Floor,Cloneable {
             buf = buf.next;
         }
         return spaces;
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        Object[] buf = a;
+        int index = 0;
+        Iterator iterator = iterator();
+        while(iterator.hasNext()){
+            buf[index++] = iterator.next();
+        }
+        return (T[]) buf;
     }
 
     @Override

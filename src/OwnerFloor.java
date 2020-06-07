@@ -28,6 +28,12 @@ public class OwnerFloor implements Floor,Cloneable{
         size = checkPlacedSpaces(spaces);
     }
 
+    @Override
+    public void clear() {
+        spaces = new Space[size];
+        size = 0;
+    }
+
     private void extend(){
         Space[] newSpaces = new Space[spaces.length*2];
         System.arraycopy(spaces, spaces.length, newSpaces, 0, spaces.length);
@@ -119,6 +125,13 @@ public class OwnerFloor implements Floor,Cloneable{
             forReturn[i] = spaces[i];
         }
         return forReturn;
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        Space[] buf = (Space[]) a;
+        System.arraycopy(spaces,0,buf,0,size);
+        return (T[]) buf;
     }
 
     //Тут тоже одна хуйня, если в собрате удобней ебануть итератор
@@ -257,7 +270,6 @@ public class OwnerFloor implements Floor,Cloneable{
         }
         return -1;
     }
-
 
     @Override
     public Space spaceWithNearestRentEndsDate() throws NoRentedSpaceException{
